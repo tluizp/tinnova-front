@@ -15,7 +15,7 @@ Siga as etapas abaixo para configurar o projeto localmente:
    Se ainda não tiver o projeto, clone-o usando o comando abaixo:
    ```bash
    git clone <URL_DO_REPOSITORIO>
-2. **Instale as dependências**:
+2. **Instale as dependências**: Acesse o diretório do projeto e instale as dependências necessárias
 
    ```bash
    npm install
