@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import { Button, Container, Row, Col, Form, ListGroup, Modal } from 'react-bootstrap';
 
 function VeiculosList() {
   const [veiculos, setVeiculos] = useState([]);
@@ -52,92 +53,105 @@ function VeiculosList() {
   };
 
   return (
-    <div>
+    <Container className="mt-4">
       <h1>Lista de Veículos</h1>
-      <div style={{ marginBottom: '20px' }}>
-        <button onClick={acessarEstatisticas} style={{ marginRight: '10px' }}>
+      <div className="mb-3">
+        <Button variant="primary" onClick={acessarEstatisticas} className="me-2">
           Ver Estatísticas
-        </button>
-        <button onClick={novoVeiculo}>Criar Novo Veículo</button>
+        </Button>
+        <Button variant="success" onClick={novoVeiculo}>
+          Criar Novo Veículo
+        </Button>
       </div>
-      <ul>
-        {veiculos.map((veiculo) => (
-          <li key={veiculo.id}>
-            {veiculo.veiculo} - {veiculo.marca} ({veiculo.ano}) 
-            <button onClick={() => iniciarEdicao(veiculo)}>Editar</button>
-            <button onClick={() => api.delete(`/veiculos/${veiculo.id}`)
-              .then(() => setVeiculos((prev) => prev.filter((v) => v.id !== veiculo.id)))
-              .catch((error) => console.error('Erro ao excluir veículo:', error))}>
-              Deletar
-            </button>
-          </li>
-        ))}
-      </ul>
 
-      {isEditing && (
-        <div>
-          <h2>Editar Veículo</h2>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <label>
-              Veículo:
-              <input
+      <ListGroup>
+        {veiculos.map((veiculo) => (
+          <ListGroup.Item key={veiculo.id} className="d-flex justify-content-between align-items-center">
+            <div>
+              {veiculo.veiculo} - {veiculo.marca} ({veiculo.ano})
+            </div>
+            <div>
+              <Button variant="warning" onClick={() => iniciarEdicao(veiculo)} className="me-2">
+                Editar
+              </Button>
+              <Button variant="danger" onClick={() => api.delete(`/veiculos/${veiculo.id}`)
+                .then(() => setVeiculos((prev) => prev.filter((v) => v.id !== veiculo.id)))
+                .catch((error) => console.error('Erro ao excluir veículo:', error))}>
+                Deletar
+              </Button>
+            </div>
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+
+      <Modal show={isEditing} onHide={cancelarEdicao}>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Veículo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={(e) => e.preventDefault()}>
+            <Form.Group controlId="formVeiculo">
+              <Form.Label>Veículo</Form.Label>
+              <Form.Control
                 type="text"
-                value={editVeiculo.veiculo}
+                value={editVeiculo?.veiculo || ''}
                 onChange={(e) =>
                   setEditVeiculo({ ...editVeiculo, veiculo: e.target.value })
                 }
               />
-            </label>
-            <br />
-            <label>
-              Marca:
-              <input
+            </Form.Group>
+            <Form.Group controlId="formMarca" className="mt-3">
+              <Form.Label>Marca</Form.Label>
+              <Form.Control
                 type="text"
-                value={editVeiculo.marca}
+                value={editVeiculo?.marca || ''}
                 onChange={(e) =>
                   setEditVeiculo({ ...editVeiculo, marca: e.target.value })
                 }
               />
-            </label>
-            <br />
-            <label>
-              Ano:
-              <input
+            </Form.Group>
+            <Form.Group controlId="formAno" className="mt-3">
+              <Form.Label>Ano</Form.Label>
+              <Form.Control
                 type="number"
-                value={editVeiculo.ano}
+                value={editVeiculo?.ano || ''}
                 onChange={(e) =>
                   setEditVeiculo({ ...editVeiculo, ano: e.target.value })
                 }
               />
-            </label>
-            <br />
-            <label>
-              Descrição:
-              <textarea
-                value={editVeiculo.descricao}
+            </Form.Group>
+            <Form.Group controlId="formDescricao" className="mt-3">
+              <Form.Label>Descrição</Form.Label>
+              <Form.Control
+                as="textarea"
+                value={editVeiculo?.descricao || ''}
                 onChange={(e) =>
                   setEditVeiculo({ ...editVeiculo, descricao: e.target.value })
                 }
               />
-            </label>
-            <br />
-            <label>
-              Vendido:
-              <input
+            </Form.Group>
+            <Form.Group controlId="formVendido" className="mt-3">
+              <Form.Check
                 type="checkbox"
-                checked={editVeiculo.vendido}
+                label="Vendido"
+                checked={editVeiculo?.vendido || false}
                 onChange={(e) =>
                   setEditVeiculo({ ...editVeiculo, vendido: e.target.checked })
                 }
               />
-            </label>
-            <br />
-            <button onClick={salvarEdicao}>Salvar</button>
-            <button onClick={cancelarEdicao}>Cancelar</button>
-          </form>
-        </div>
-      )}
-    </div>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cancelarEdicao}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={salvarEdicao}>
+            Salvar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
   );
 }
 

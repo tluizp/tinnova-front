@@ -1,49 +1,72 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
+import { Container, Row, Col, ListGroup, Card } from 'react-bootstrap';
 
 function Estatisticas() {
   const [estatisticas, setEstatisticas] = useState({});
 
   useEffect(() => {
-    api.get('/veiculos/estatisticas').then((response) => setEstatisticas(response.data));
+    api.get('/veiculos/estatisticas')
+      .then((response) => setEstatisticas(response.data))
+      .catch((error) => console.error('Erro ao buscar estatísticas:', error));
   }, []);
 
   return (
-    <div>
-      <h1>Estatísticas</h1>
-      <h2>Por Década</h2>
-      <ul>
-        {estatisticas.decadas?.map((decada) => (
-          <li key={decada.decada}>
-            {decada.decada}: {decada.quantidade} veículos
-          </li>
-        ))}
-      </ul>
-      <h2>Por Fabricante</h2>
-      <ul>
-        {estatisticas.fabricantes?.map((fabricante) => (
-          <li key={fabricante.marca}>
-            {fabricante.marca}: {fabricante.quantidade} veículos
-          </li>
-        ))}
-      </ul>
-      <h2>Registrados na ultima semana</h2>
-      <ul>
-        {estatisticas.ultimos7Dias?.map((lastWeek) => (
-          <li key={lastWeek.id}>
-            {lastWeek.veiculo} -- {lastWeek.ano} -- {lastWeek.created}
-          </li>
-        ))}
-      </ul>
-      <h2>Quatidade de veiculos nao vendidos</h2>
-      <ul>
-        {estatisticas.naoVendidos?.map((naoVendidos) => (
-          <li key={naoVendidos.id}>
-            {naoVendidos.veiculo} -- {naoVendidos.ano} -- {naoVendidos.created}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Container className="mt-4">
+      <h1 className="mb-4">Estatísticas</h1>
+      
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>Por Década</Card.Title>
+          <ListGroup>
+            {estatisticas.decadas?.map((decada) => (
+              <ListGroup.Item key={decada.decada}>
+                {decada.decada}: {decada.quantidade} veículos
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Card.Body>
+      </Card>
+
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>Por Fabricante</Card.Title>
+          <ListGroup>
+            {estatisticas.fabricantes?.map((fabricante) => (
+              <ListGroup.Item key={fabricante.marca}>
+                {fabricante.marca}: {fabricante.quantidade} veículos
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Card.Body>
+      </Card>
+
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>Registrados na Última Semana</Card.Title>
+          <ListGroup>
+            {estatisticas.ultimos7Dias?.map((lastWeek) => (
+              <ListGroup.Item key={lastWeek.id}>
+                {lastWeek.veiculo} -- {lastWeek.ano} -- {new Date(lastWeek.created).toLocaleDateString()}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Card.Body>
+      </Card>
+
+      <Card className="mb-4">
+        <Card.Body>
+          <Card.Title>Quantidade de Veículos Não Vendidos</Card.Title>
+          <ListGroup>
+            {estatisticas.naoVendidos?.map((naoVendidos) => (
+              <ListGroup.Item key={naoVendidos.id}>
+                {naoVendidos.veiculo} -- {naoVendidos.ano} -- {new Date(naoVendidos.created).toLocaleDateString()}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 }
 

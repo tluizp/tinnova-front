@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import VeiculosList from './components/VeiculosList';
 import VeiculoForm from './components/VeiculoForm';
 import Estatisticas from './components/Estatisticas';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
